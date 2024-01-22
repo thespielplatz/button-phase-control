@@ -16,7 +16,6 @@ const char* ssid = WIFI_SSID;
 const char* password = WIFI_PASSWORD;
 const char* hostname = "espui";
 
-
 void btnDownCallback(Control* sender, int type) {
   if (type == B_DOWN) {
     Serial.println("btnDownCallback DOWN");
@@ -32,6 +31,40 @@ void btnUpCallback(Control* sender, int type) {
     digitalWrite(PIN_PHASE_UP, HIGH); 
     delay(BUTTON_DOWN_DURATION);                      
     digitalWrite(PIN_PHASE_UP, LOW);  
+  }
+}
+
+int sliderValue = 0;
+int initalValue = 0;
+int diffValue = 0;
+
+void sliderNumber(Control* sender, int type) {
+  sliderValue = sender->value.toInt();
+  Serial.print("Slider: ");
+  Serial.println(sliderValue);
+}
+
+void btnSetCallback(Control* sender, int type) {
+  if (type == B_DOWN) {
+    if (diffValue != 0) {
+      Serial.print("Not Ready yet");
+      return;
+    }
+
+    Serial.println("btnSetCallback DOWN");
+    diffValue = sliderValue - initalValue;
+
+    Serial.print("initalValue: ");
+    Serial.println(initalValue);
+    Serial.print("sliderValue: ");
+    Serial.println(sliderValue);
+    Serial.print("diffValue: ");
+    Serial.println(diffValue);
+
+    initalValue = sliderValue;
+
+    Serial.print("DONE - initalValue: ");
+    Serial.println(initalValue);
   }
 }
 
@@ -99,10 +132,30 @@ void setup() {
   ESPUI.button("Up", &btnUpCallback, ControlColor::Peterriver, "Press");
   ESPUI.button("Down", &btnDownCallback, ControlColor::Wetasphalt, "Press");
 
+  ESPUI.slider("Number", &sliderNumber, ControlColor::Alizarin, 0, 0, 100);
+  ESPUI.button("Set", &btnSetCallback, ControlColor::Wetasphalt, "Set");
+
+
   ESPUI.begin("ESPUI Control");
 }
 
 void loop() {
   dnsServer.processNextRequest();
   
+  if (diffValue > 0) {
+    digitalWrite(PIN_PHASE_UP, HIGH); 
+    delay(BUTTON_DOWN_DURATION);                      
+    digitalWrite(PIN_PHASE_UP, LOW);          
+    delay(BUTTON_DOWN_DURATION); 
+
+    diffValue--;
+  }
+  if (diffValue < 0) {
+    digitalWrite(PIN_PHASE_DOWN, HIGH); 
+    delay(BUTTON_DOWN_DURATION);                      
+    digitalWrite(PIN_PHASE_DOWN, LOW);          
+    delay(BUTTON_DOWN_DURATION);                      
+
+    diffValue++;
+  }
 }
