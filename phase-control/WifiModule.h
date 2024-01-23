@@ -11,7 +11,7 @@ class WifiModule {
     IPAddress apIP;
     static const byte DNS_PORT;
 
-    void connectWithTimeout();
+    void connectWithTimeout(char* wifi_ssid, char* wifi_password);
     void createHotspot();
 
   public:

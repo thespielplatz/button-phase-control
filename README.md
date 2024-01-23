@@ -5,6 +5,7 @@ Extend the XXXX Phase control board with an EPS32 so it can be controlled via a 
 
 - [ ] add current Value
 - [ ] add inital reset & reset button
+- [ ] Change Wifi settings
 - [ ] add api?
 
 - BJT: https://www.diyengineers.com/2020/12/17/2n2222-transistor-npn/

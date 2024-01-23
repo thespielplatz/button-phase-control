@@ -47,6 +47,8 @@ void PhaseControl::stepUp() {
 }
 
 void PhaseControl::setTargetValue(uint8_t value) {
+  Serial.print("Setting target to: ");
+  Serial.println(value);
   this->targetValue = max(min((int)value, 100), 0);
 }
 
@@ -56,8 +58,16 @@ uint8_t PhaseControl::getTargetValue() {
     
 
 void PhaseControl::update() {
-  uint8_t diff = this->targetValue - this->currentValue;
+  int8_t diff = this->targetValue - this->currentValue;
     
+  if (diff != 0) {
+    Serial.print("currentValue: ");
+    Serial.print(this->currentValue);
+    Serial.print(" targetValue: ");
+    Serial.print(this->targetValue);
+    Serial.println("");
+  }
+
   if (diff > 0) {
     this->stepUp();
   }

@@ -14,7 +14,7 @@ void WifiModule::connect(char* wifi_ssid, char* wifi_password) {
   Serial.print("Try to connect to existing network");
 
   // Wait for connection, 5s timeout
-  this->connectWithTimeout();
+  this->connectWithTimeout(wifi_ssid, wifi_password);
 
   // not connected -> create hotspot
   if (WiFi.status() != WL_CONNECTED) {
@@ -34,8 +34,9 @@ void WifiModule::update() {
   this->dnsServer.processNextRequest();
 }
 
-void WifiModule::connectWithTimeout() {
+void WifiModule::connectWithTimeout(char* wifi_ssid, char* wifi_password) {
   uint8_t timeout = 10;
+  WiFi.begin(wifi_ssid, wifi_password);
   do {
       delay(500);
       Serial.print(".");

@@ -31,29 +31,27 @@ void setup() {
 
   ESPUI.separator("Status");
   labelStatusId = ESPUI.label("Status", ControlColor::Peterriver, "START");
-  labelPhaseValueId = ESPUI.label("Phase", ControlColor::Peterriver, "-");
+  labelPhaseValueId = ESPUI.label("Phase Control", ControlColor::Peterriver, "-");
 
   ESPUI.separator("Control");
 
   ESPUI.button("Up", [](Control *sender, int eventname) {
-    if (eventname = B_DOWN) {
+    if (eventname == B_DOWN) {
       phaseControl->setTargetValue(phaseControl->getTargetValue() + 1);
     }
   }, ControlColor::Wetasphalt, "+1");
 
   ESPUI.button("Down", [](Control *sender, int eventname) {
-    if (eventname = B_DOWN) {
+    if (eventname == B_DOWN) {
       phaseControl->setTargetValue(phaseControl->getTargetValue() - 1);
     }
   }, ControlColor::Wetasphalt, "-1");
 
-  sliderTargetValueId = ESPUI.slider("Set to", NULL, ControlColor::Alizarin, 0, 0, 100);
-  ESPUI.button("Set", [](Control *sender, int eventname) {
-    if (eventname = B_DOWN) {
-      Control *slider = ESPUI.getControl(sliderTargetValueId);
-      phaseControl->setTargetValue(slider->value.toInt());
+  ESPUI.slider("Set to value", [](Control *sender, int eventname) {
+    if (eventname == SL_VALUE) {
+      phaseControl->setTargetValue(sender->value.toInt());
     }
-  }, ControlColor::Wetasphalt, "Set");
+  }, ControlColor::Wetasphalt, 0, 0, 100);
 
   ESPUI.begin("ESPUI Control");
 
