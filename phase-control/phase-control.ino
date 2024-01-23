@@ -2,6 +2,7 @@
 #include <ESPUI.h>
 #include "PhaseControl.h"
 #include "WifiModule.h"
+#include "tools.h"
 
 const uint8_t PIN_PHASE_DOWN = 33; // Green
 const uint8_t PIN_PHASE_UP = 14; // Yellow
@@ -30,7 +31,7 @@ void setup() {
 	ESPUI.setVerbosity(Verbosity::Quiet);
 
   // ESPUI.separator("Status");
-  labelStatusId = ESPUI.label("Status", ControlColor::Peterriver, "START");
+  labelStatusId = ESPUI.label("Status", ControlColor::Peterriver, "Startup");
   labelPhaseValueId = ESPUI.label("Phase Control", ControlColor::Peterriver, "-");
 
   // ESPUI.separator("Control");
@@ -46,13 +47,20 @@ void setup() {
     }
   });
 
-  uint16_t sliderId = ESPUI.addControl(ControlType::Slider, "Set to value", String(0), ControlColor::Wetasphalt, Control::noParent, [](Control *sender, int eventname) {
+  uint16_t sliderId = ESPUI.addControl(ControlType::Slider, "Set to value", "0", ControlColor::Wetasphalt, Control::noParent, [](Control *sender, int eventname) {
     if (eventname == SL_VALUE) {
       phaseControl->setTargetValue(sender->value.toInt());
     }
   });
   ESPUI.addControl(ControlType::Min, "0", String(0), ControlColor::None, sliderId);
   ESPUI.addControl(ControlType::Max, "100", String(100), ControlColor::None, sliderId);
+
+  uint16_t calibrationId = ESPUI.addControl(ControlType::Label, "Recalibration", "Recalibration takes 15sec!", ControlColor::Wetasphalt, Control::noParent);
+  ESPUI.addControl(ControlType::Button, "Info", "Recalibrate", ControlColor::Wetasphalt, calibrationId, [](Control *sender, int eventname) {
+    if (eventname == B_DOWN) {
+      phaseControl->recalibrate();
+    }
+  });
 
   ESPUI.begin("ESPUI Control");
 
@@ -61,9 +69,16 @@ void setup() {
   phaseControl->setPhaseChangedCallback([](uint8_t phaseValue) { 
     ESPUI.updateLabel(labelPhaseValueId, String(phaseValue));
   });
+  phaseControl->setStateChangedCallback([](PhaseControlState state) { 
+    ESPUI.updateLabel(labelStatusId, String(PhaseControl::PhaseControlStateToString(state)));
+  });
 }
 
 void loop() {
   wifi->update();
   phaseControl->update();
+
+  if (phaseControl->getState() == PhaseControlState::Recalibrating) {
+    ESPUI.updateLabel(labelStatusId, "Recalibrating - " + millisToReadable(phaseControl->getRecalibratingTimeLeft()));
+  }
 }
