@@ -29,29 +29,30 @@ void setup() {
   //Turn off verbose debugging
 	ESPUI.setVerbosity(Verbosity::Quiet);
 
-  ESPUI.separator("Status");
+  // ESPUI.separator("Status");
   labelStatusId = ESPUI.label("Status", ControlColor::Peterriver, "START");
   labelPhaseValueId = ESPUI.label("Phase Control", ControlColor::Peterriver, "-");
 
-  ESPUI.separator("Control");
-
-  ESPUI.button("Up", [](Control *sender, int eventname) {
+  // ESPUI.separator("Control");
+  uint16_t panelControlsId = ESPUI.button("Controls", [](Control *sender, int eventname) {
     if (eventname == B_DOWN) {
       phaseControl->setTargetValue(phaseControl->getTargetValue() + 1);
     }
-  }, ControlColor::Wetasphalt, "+1");
+  }, ControlColor::Wetasphalt, "Up");
 
-  ESPUI.button("Down", [](Control *sender, int eventname) {
+  ESPUI.addControl(ControlType::Button, "Down (i)", "Down", ControlColor::Wetasphalt, panelControlsId, [](Control *sender, int eventname) {
     if (eventname == B_DOWN) {
       phaseControl->setTargetValue(phaseControl->getTargetValue() - 1);
     }
-  }, ControlColor::Wetasphalt, "-1");
+  });
 
-  ESPUI.slider("Set to value", [](Control *sender, int eventname) {
+  uint16_t sliderId = ESPUI.addControl(ControlType::Slider, "Set to value", String(0), ControlColor::Wetasphalt, Control::noParent, [](Control *sender, int eventname) {
     if (eventname == SL_VALUE) {
       phaseControl->setTargetValue(sender->value.toInt());
     }
-  }, ControlColor::Wetasphalt, 0, 0, 100);
+  });
+  ESPUI.addControl(ControlType::Min, "0", String(0), ControlColor::None, sliderId);
+  ESPUI.addControl(ControlType::Max, "100", String(100), ControlColor::None, sliderId);
 
   ESPUI.begin("ESPUI Control");
 
