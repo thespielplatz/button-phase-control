@@ -65,6 +65,7 @@ void setup() {
   ESPUI.begin("ESPUI Control");
 
   ESPUI.updateLabel(labelStatusId,  "Startup");
+  ESPUI.updateLabel(labelPhaseValueId,  "0");
 
   phaseControl->setPhaseChangedCallback([](uint8_t phaseValue) { 
     ESPUI.updateLabel(labelPhaseValueId, String(phaseValue));
