@@ -9,7 +9,7 @@ const uint8_t PIN_PHASE_UP = 14; // Yellow
 
 const char* hostname = "PhaseControl";
 
-uint16_t labelStatusId, labelPhaseValueId, sliderTargetValueId;
+uint16_t labelStatusId, labelPhaseValueId, sliderTargetValueId, sliderId;
 
 PhaseControl *phaseControl = new PhaseControl(PIN_PHASE_DOWN, PIN_PHASE_UP);
 WifiModule *wifi = new WifiModule();
@@ -47,7 +47,7 @@ void setup() {
     }
   });
 
-  uint16_t sliderId = ESPUI.addControl(ControlType::Slider, "Set to value", "0", ControlColor::Wetasphalt, Control::noParent, [](Control *sender, int eventname) {
+  sliderId = ESPUI.addControl(ControlType::Slider, "Set to value", "0", ControlColor::Wetasphalt, Control::noParent, [](Control *sender, int eventname) {
     if (eventname == SL_VALUE) {
       phaseControl->setTargetValue(sender->value.toInt());
     }
@@ -72,6 +72,9 @@ void setup() {
   });
   phaseControl->setStateChangedCallback([](PhaseControlState state) { 
     ESPUI.updateLabel(labelStatusId, String(PhaseControl::PhaseControlStateToString(state)));
+    if (PhaseControlState::Recalibrating) {
+      ESPUI.updateSlider(sliderId, 0);
+    }
   });
 }
 
