@@ -41,7 +41,7 @@ class PhaseControl {
     void stepDown();
     void stepUp();
 
-    void setTargetValue(uint8_t value);
+    void setTargetValue(int8_t value);
     uint8_t getTargetValue();
     void update();
 

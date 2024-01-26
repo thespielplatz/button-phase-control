@@ -61,10 +61,10 @@ void PhaseControl::stepUp() {
   this->setCurrentValue(this->currentValue + 1);
 }
 
-void PhaseControl::setTargetValue(uint8_t value) {
-  Serial.print("Setting target to: ");
-  Serial.println(value);
+void PhaseControl::setTargetValue(int8_t value) {
   this->targetValue = max(min((int)value, 100), 0);
+  Serial.print("Setting target to: ");
+  Serial.println(this->targetValue);
 }
 
 uint8_t PhaseControl::getTargetValue() {
@@ -77,8 +77,8 @@ void PhaseControl::recalibrate() {
   digitalWrite(this->pinPhaseDown, HIGH); 
   Serial.println("Recalibrating");
 
-   this->setCurrentValue(0);
-   this->setTargetValue(0);
+  this->setCurrentValue(0);
+  this->setTargetValue(0);
 }  
 
 int32_t PhaseControl::getRecalibratingTimeLeft() {

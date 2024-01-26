@@ -9,10 +9,24 @@ const uint8_t PIN_PHASE_UP = 14; // Yellow
 
 const char* hostname = "PhaseControl";
 
-uint16_t labelStatusId, labelPhaseValueId, sliderTargetValueId, sliderId;
+uint16_t labelStatusId, labelPhaseValueId, sliderTargetValueId, sliderId, btnDownId, btnUpId, btnRecalibrateId;
 
 PhaseControl *phaseControl = new PhaseControl(PIN_PHASE_DOWN, PIN_PHASE_UP);
 WifiModule *wifi = new WifiModule();
+
+void disableControls() {
+  ESPUI.setEnabled(sliderId, false);
+  ESPUI.setEnabled(btnDownId, false);
+  ESPUI.setEnabled(btnUpId, false);
+  ESPUI.setEnabled(btnRecalibrateId, false);
+}
+
+void enableControls() {
+  ESPUI.setEnabled(sliderId, true);
+  ESPUI.setEnabled(btnDownId, true);
+  ESPUI.setEnabled(btnUpId, true);
+  ESPUI.setEnabled(btnRecalibrateId, true);
+}
 
 void test(Control *sender, int eventname) {
 
@@ -41,7 +55,9 @@ void setup() {
     }
   }, ControlColor::Wetasphalt, "Up");
 
-  ESPUI.addControl(ControlType::Button, "Down (i)", "Down", ControlColor::Wetasphalt, panelControlsId, [](Control *sender, int eventname) {
+  btnUpId = panelControlsId;
+
+  btnDownId = ESPUI.addControl(ControlType::Button, "Down (i)", "Down", ControlColor::Wetasphalt, panelControlsId, [](Control *sender, int eventname) {
     if (eventname == B_DOWN) {
       phaseControl->setTargetValue(phaseControl->getTargetValue() - 1);
     }
@@ -56,7 +72,7 @@ void setup() {
   ESPUI.addControl(ControlType::Max, "100", String(100), ControlColor::None, sliderId);
 
   uint16_t calibrationId = ESPUI.addControl(ControlType::Label, "Recalibration", "Recalibration takes 15sec!", ControlColor::Wetasphalt, Control::noParent);
-  ESPUI.addControl(ControlType::Button, "Info", "Recalibrate", ControlColor::Wetasphalt, calibrationId, [](Control *sender, int eventname) {
+  btnRecalibrateId =  ESPUI.addControl(ControlType::Button, "Info", "Recalibrate", ControlColor::Wetasphalt, calibrationId, [](Control *sender, int eventname) {
     if (eventname == B_DOWN) {
       phaseControl->recalibrate();
     }
@@ -71,9 +87,16 @@ void setup() {
     ESPUI.updateLabel(labelPhaseValueId, String(phaseValue));
   });
   phaseControl->setStateChangedCallback([](PhaseControlState state) { 
+    Serial.print("State Changed to: ");
+    Serial.println(PhaseControl::PhaseControlStateToString(state));
+
     ESPUI.updateLabel(labelStatusId, String(PhaseControl::PhaseControlStateToString(state)));
-    if (PhaseControlState::Recalibrating) {
+    if (state == PhaseControlState::Recalibrating) {
       ESPUI.updateSlider(sliderId, 0);
+      disableControls();
+    }
+    if (state == PhaseControlState::Running) {
+      enableControls();
     }
   });
 }
