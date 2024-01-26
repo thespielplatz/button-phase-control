@@ -1,4 +1,5 @@
 #include "secrets.h"
+#include <Arduino.h>
 #include <ESPUI.h>
 #include "PhaseControl.h"
 #include "WifiModule.h"
@@ -28,8 +29,10 @@ void enableControls() {
   ESPUI.setEnabled(btnRecalibrateId, true);
 }
 
-void test(Control *sender, int eventname) {
-
+void setTargetValueAndSlider(int8_t newTargetValue) {
+  newTargetValue = min(100, max(0, (int)newTargetValue));
+  ESPUI.updateSlider(sliderId, newTargetValue);
+  phaseControl->setTargetValue(newTargetValue);
 }
 
 void setup() {
@@ -44,14 +47,13 @@ void setup() {
   //Turn off verbose debugging
 	ESPUI.setVerbosity(Verbosity::Quiet);
 
-  // ESPUI.separator("Status");
   labelStatusId = ESPUI.label("Status", ControlColor::Peterriver, "Startup");
-  labelPhaseValueId = ESPUI.label("Phase Control", ControlColor::Peterriver, "-");
+  labelPhaseValueId = ESPUI.label("Current Value", ControlColor::Peterriver, "-");
 
-  // ESPUI.separator("Control");
   uint16_t panelControlsId = ESPUI.button("Controls", [](Control *sender, int eventname) {
     if (eventname == B_DOWN) {
-      phaseControl->setTargetValue(phaseControl->getTargetValue() + 1);
+      Control *slider = ESPUI.getControl(sliderId);
+      setTargetValueAndSlider(ESPUI.getControl(sliderId)->value.toInt() + 1);
     }
   }, ControlColor::Wetasphalt, "Up");
 
@@ -59,11 +61,11 @@ void setup() {
 
   btnDownId = ESPUI.addControl(ControlType::Button, "Down (i)", "Down", ControlColor::Wetasphalt, panelControlsId, [](Control *sender, int eventname) {
     if (eventname == B_DOWN) {
-      phaseControl->setTargetValue(phaseControl->getTargetValue() - 1);
+      setTargetValueAndSlider(ESPUI.getControl(sliderId)->value.toInt() - 1);
     }
   });
 
-  sliderId = ESPUI.addControl(ControlType::Slider, "Set to value", "0", ControlColor::Wetasphalt, Control::noParent, [](Control *sender, int eventname) {
+  sliderId = ESPUI.addControl(ControlType::Slider, "Target Value", "0", ControlColor::Wetasphalt, Control::noParent, [](Control *sender, int eventname) {
     if (eventname == SL_VALUE) {
       phaseControl->setTargetValue(sender->value.toInt());
     }
