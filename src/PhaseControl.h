@@ -25,8 +25,10 @@ class PhaseControl {
     unsigned long timeWhenUpdated;
     int32_t recalibratingTimeLeft;
 
-    std::function<void(uint8_t)> phaseChangedCallback;
-    std::function<void(PhaseControlState)> stateChangedCallback;
+    std::function<void(uint8_t, void *UserInfo)> phaseChangedCallback;
+    void *phaseChangedCallbackUserInfo;
+    std::function<void(PhaseControlState, void *UserInfo)> stateChangedCallback;
+    void *stateChangedCallbackUserInfo;
 
     void setCurrentValue(uint8_t value);
     void setState(PhaseControlState newState);
@@ -45,8 +47,8 @@ class PhaseControl {
     uint8_t getTargetValue();
     void update();
 
-    void setPhaseChangedCallback(std::function<void(uint8_t)> phaseChangedCallback);
-    void setStateChangedCallback(std::function<void(PhaseControlState)> stateChangedCallback);
+    void setPhaseChangedCallback(std::function<void(uint8_t, void *UserInfo)> phaseChangedCallback, void *UserInfo);
+    void setStateChangedCallback(std::function<void(PhaseControlState, void *UserInfo)> stateChangedCallback, void *UserInfo);
 
     void recalibrate();
     int32_t getRecalibratingTimeLeft();

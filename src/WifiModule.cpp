@@ -2,15 +2,15 @@
 
 const byte WifiModule::DNS_PORT = 53;
 
-WifiModule::WifiModule() : dnsServer(), apIP(192, 168, 4, 1)  {
+WifiModule::WifiModule() : dnsServer(), apIP(192, 168, 0, 1)  {
 }
 
-void WifiModule::setHostname(const char* hostname) {
+void WifiModule::setHostname(String hostname) {
   this->hostname = hostname;
-  WiFi.setHostname(this->hostname);
+  WiFi.setHostname(hostname.c_str());
 }
 
-void WifiModule::connect(const char* wifi_ssid, const char* wifi_password) {
+void WifiModule::connect(String wifi_ssid, String wifi_password) {
   Serial.print("Try to connect to existing network");
 
   // Wait for connection, 5s timeout
@@ -34,7 +34,7 @@ void WifiModule::update() {
   this->dnsServer.processNextRequest();
 }
 
-void WifiModule::connectWithTimeout(const char* wifi_ssid, const char* wifi_password) {
+void WifiModule::connectWithTimeout(String wifi_ssid, String wifi_password) {
   uint8_t timeout = 10;
   WiFi.begin(wifi_ssid, wifi_password);
   do {

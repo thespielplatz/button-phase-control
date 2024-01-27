@@ -9,8 +9,6 @@ class PhaseControlViewController;
 
 class PhaseControlViewController {
   protected:
-    static PhaseControlViewController* singleton;
-
     uint16_t sliderId, btnDownId, btnUpId, btnRecalibrateId, labelPhaseValueId, labelStatusId;
     PhaseControl* phaseControl;
 

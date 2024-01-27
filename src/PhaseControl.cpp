@@ -31,7 +31,7 @@ void PhaseControl::setup() {
 void PhaseControl::setState(PhaseControlState newState) {
   this->state = newState;
   if (this->stateChangedCallback != NULL) {
-    this->stateChangedCallback(state);
+    this->stateChangedCallback(state, this->stateChangedCallbackUserInfo);
   }
 }
 
@@ -39,7 +39,7 @@ void PhaseControl::setState(PhaseControlState newState) {
 void PhaseControl::setCurrentValue(uint8_t value) {
   this->currentValue = max(min((int)value, 100), 0);
   if (this->phaseChangedCallback != NULL) {
-    this->phaseChangedCallback(this->currentValue);
+    this->phaseChangedCallback(this->currentValue, this->phaseChangedCallbackUserInfo);
   }
 }
 
@@ -118,12 +118,14 @@ void PhaseControl::update() {
   }
 }
 
-void PhaseControl::setPhaseChangedCallback(std::function<void(uint8_t)> phaseChangedCallback) {
+void PhaseControl::setPhaseChangedCallback(std::function<void(uint8_t, void *UserInfo)> phaseChangedCallback, void *UserInfo) {
   this->phaseChangedCallback = phaseChangedCallback;
+  this->phaseChangedCallbackUserInfo = UserInfo;
 }
 
-void PhaseControl::setStateChangedCallback(std::function<void(PhaseControlState)> stateChangedCallback) {
+void PhaseControl::setStateChangedCallback(std::function<void(PhaseControlState, void *UserInfo)> stateChangedCallback, void *UserInfo) {
   this->stateChangedCallback = stateChangedCallback;
+  this->stateChangedCallbackUserInfo = UserInfo;
 }
 
 PhaseControlState PhaseControl::getState() {

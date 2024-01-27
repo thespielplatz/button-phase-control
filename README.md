@@ -9,7 +9,7 @@ Extend the XXXX Phase control board with an EPS32 so it can be controlled via a 
 - [x] Disable UI During reset
 - [x] Refactor UI Controls of Phase Control into class
 - [x] convert to platform IO
-- [ ] add github pilot
+- [x] add github pilot
 - [ ] Change Wifi settings incl. addESPUITab
 - [ ] Power supply 
 - [ ] Build on Board

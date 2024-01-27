@@ -6,19 +6,19 @@
 
 class WifiModule {
   private:
-    const char *hostname;
+    String hostname;
     DNSServer dnsServer;
     IPAddress apIP;
     static const byte DNS_PORT;
 
-    void connectWithTimeout(const char* wifi_ssid, const char* wifi_password);
+    void connectWithTimeout(String wifi_ssid, String wifi_password);
     void createHotspot();
 
   public:
 
     WifiModule();
-    void setHostname(const char* hostname);
-    void connect(const char* wifi_ssid, const char* wifi_password);
+    void setHostname(String hostname);
+    void connect(String wifi_ssid, String wifi_password);
 
     void update();
 };

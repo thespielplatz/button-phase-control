@@ -3,8 +3,6 @@
 #include <ESPUI.h>
 #include "tools.h"
 
-PhaseControlViewController* PhaseControlViewController::singleton = NULL;
-
 PhaseControlViewController::PhaseControlViewController(PhaseControl* phaseControl) : 
     sliderId(0),
     btnDownId(0),
@@ -13,7 +11,6 @@ PhaseControlViewController::PhaseControlViewController(PhaseControl* phaseContro
     labelStatusId(0),
     labelPhaseValueId(0) {
   this->phaseControl = phaseControl;
-  PhaseControlViewController::singleton = this;
 }
 
 void PhaseControlViewController::createUI(uint16_t tabId) {
@@ -22,51 +19,58 @@ void PhaseControlViewController::createUI(uint16_t tabId) {
   this->labelStatusId = ESPUI.addControl(ControlType::Label, "Status", "-", ControlColor::Peterriver, tabId);
   this->labelPhaseValueId = ESPUI.addControl(ControlType::Label, "Current Value", "-", ControlColor::Peterriver, tabId);
 
-  uint16_t panelControlsId = ESPUI.addControl(ControlType::Button, "Controls", "Up", ControlColor::Wetasphalt, tabId, [](Control *sender, int eventname) {
+  uint16_t panelControlsId = ESPUI.addControl(ControlType::Button, "Controls", "Up", ControlColor::Wetasphalt, tabId, [](Control *sender, int eventname, void *UserInfo) {
+    PhaseControlViewController *self = (PhaseControlViewController *)UserInfo;
     if (eventname == B_DOWN) {
-      PhaseControlViewController::singleton->setTargetValueAndSlider(ESPUI.getControl(PhaseControlViewController::singleton->sliderId)->value.toInt() + 1);
+      self->setTargetValueAndSlider(ESPUI.getControl(self->sliderId)->value.toInt() + 1);
     }
-  });
+  }, this);
 
   this->btnUpId = panelControlsId;
 
-  this->btnDownId = ESPUI.addControl(ControlType::Button, "Down (i)", "Down", ControlColor::Wetasphalt, panelControlsId, [](Control *sender, int eventname) {
+  this->btnDownId = ESPUI.addControl(ControlType::Button, "Down (i)", "Down", ControlColor::Wetasphalt, panelControlsId, [](Control *sender, int eventname, void *UserInfo) {
+    PhaseControlViewController *self = (PhaseControlViewController *)UserInfo;
     if (eventname == B_DOWN) {
-      PhaseControlViewController::singleton->setTargetValueAndSlider(ESPUI.getControl(PhaseControlViewController::singleton->sliderId)->value.toInt() - 1);
+      self->setTargetValueAndSlider(ESPUI.getControl(self->sliderId)->value.toInt() - 1);
     }
-  });
+  }, this);
 
-  this->sliderId = ESPUI.addControl(ControlType::Slider, "Target Value", "0", ControlColor::Wetasphalt, tabId, [](Control *sender, int eventname) {
+
+  this->sliderId = ESPUI.addControl(ControlType::Slider, "Target Value", "0", ControlColor::Wetasphalt, tabId, [](Control *sender, int eventname, void *UserInfo) {
+    PhaseControlViewController *self = (PhaseControlViewController *)UserInfo;
     if (eventname == SL_VALUE) {
-      PhaseControlViewController::singleton->phaseControl->setTargetValue(sender->value.toInt());
+      self->phaseControl->setTargetValue(sender->value.toInt());
     }
-  });
+  }, this);
   ESPUI.addControl(ControlType::Min, "0", String(0), ControlColor::None, sliderId);
   ESPUI.addControl(ControlType::Max, "100", String(100), ControlColor::None, sliderId);
 
   uint16_t calibrationId = ESPUI.addControl(ControlType::Label, "Recalibration", "Recalibration takes 15sec!", ControlColor::Wetasphalt, tabId);
-  this->btnRecalibrateId =  ESPUI.addControl(ControlType::Button, "Info", "Recalibrate", ControlColor::Wetasphalt, calibrationId, [](Control *sender, int eventname) {
+  this->btnRecalibrateId =  ESPUI.addControl(ControlType::Button, "Info", "Recalibrate", ControlColor::Wetasphalt, calibrationId, [](Control *sender, int eventname, void *UserInfo) {
+    PhaseControlViewController *self = (PhaseControlViewController *)UserInfo;
     if (eventname == B_DOWN) {
-      PhaseControlViewController::singleton->phaseControl->recalibrate();
+      self->phaseControl->recalibrate();
     }
-  });
+  }, this);
 
-  this->phaseControl->setPhaseChangedCallback([](uint8_t phaseValue) { 
-    ESPUI.updateLabel(PhaseControlViewController::singleton->labelPhaseValueId, String(phaseValue));
-  });
-  this->phaseControl->setStateChangedCallback([](PhaseControlState state) { 
+  this->phaseControl->setPhaseChangedCallback([](uint8_t phaseValue, void *UserInfo) { 
+    PhaseControlViewController *self = (PhaseControlViewController *)UserInfo;
+    ESPUI.updateLabel(self->labelPhaseValueId, String(phaseValue));
+  }, this);
+  this->phaseControl->setStateChangedCallback([](PhaseControlState state, void *UserInfo) { 
+    PhaseControlViewController *self = (PhaseControlViewController *)UserInfo;
     Serial.print("State Changed to: ");
     Serial.println(PhaseControl::PhaseControlStateToString(state));
 
-    ESPUI.updateLabel(PhaseControlViewController::singleton->labelStatusId, String(PhaseControl::PhaseControlStateToString(state)));
+    ESPUI.updateLabel(self->labelStatusId, String(PhaseControl::PhaseControlStateToString(state)));
     if (state == PhaseControlState::Recalibrating) {
-      ESPUI.updateSlider(PhaseControlViewController::singleton->sliderId, 0);
-      PhaseControlViewController::singleton->disableControls();
+      ESPUI.updateSlider(self->sliderId, 0);
+      self->disableControls();
     }
     if (state == PhaseControlState::Running) {
-      PhaseControlViewController::singleton->enableControls();
+      self->enableControls();
     }
-  });
+  }, this);
 
   ESPUI.updateLabel(this->labelStatusId,  "Startup");
   ESPUI.updateLabel(this->labelPhaseValueId,  "0");
