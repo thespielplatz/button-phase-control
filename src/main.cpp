@@ -54,4 +54,5 @@ void loop() {
   wifi->update();
   phaseControl->update();
   phaseControlViewController->update();
+  wifiModuleViewController->update();
 }

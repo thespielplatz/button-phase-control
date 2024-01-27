@@ -13,6 +13,7 @@ public:
     void setWifiPassword(String password);
     String getWifiSSID();
     String getWifiPassword();
+    void end();
 };
 
 #endif // CONFIG_H

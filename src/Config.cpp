@@ -23,3 +23,7 @@ String Config::getWifiSSID() {
 String Config::getWifiPassword() {
     return this->preferences->getString(CONFIG_WIFI_PASSWORD, "");
 }
+
+void Config::end() {
+    this->preferences->end();
+}
