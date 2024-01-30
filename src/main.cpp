@@ -18,6 +18,8 @@ uint16_t tabPhaseControl, tabWifiSettings;
 
 Preferences *preferences;
 
+bool firstRun = true;
+
 Config *config = new Config();
 
 PhaseControl *phaseControl = new PhaseControl(PIN_PHASE_DOWN, PIN_PHASE_UP);
@@ -35,7 +37,6 @@ void setup() {
   phaseControl->setup();
 
   wifi->setHostname((char *)hostname);
-  Serial.println(config->getWifiSSID());
   wifi->connect(config->getWifiSSID(), config->getWifiPassword());
 
   //Turn off verbose debugging
@@ -55,4 +56,11 @@ void loop() {
   phaseControl->update();
   phaseControlViewController->update();
   wifiModuleViewController->update();
+
+  if (firstRun) {
+    Serial.println("First Run - starting recalibration");
+
+    firstRun = false;
+    phaseControl->recalibrate();
+  }
 }

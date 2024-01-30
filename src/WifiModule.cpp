@@ -11,7 +11,9 @@ void WifiModule::setHostname(String hostname) {
 }
 
 void WifiModule::connect(String wifi_ssid, String wifi_password) {
-  Serial.print("Try to connect to existing network");
+  Serial.print("Try to connect to existing network ");
+  Serial.print(wifi_ssid);
+  Serial.print(" ");
 
   // Wait for connection, 5s timeout
   this->connectWithTimeout(wifi_ssid, wifi_password);
