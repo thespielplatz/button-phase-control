@@ -10,9 +10,10 @@ Extend the XXXX Phase control board with an EPS32 so it can be controlled via a 
 - [x] Refactor UI Controls of Phase Control into class
 - [x] convert to platform IO
 - [x] add github pilot
-- [ ] Change Wifi settings incl. addESPUITab
+- [x] Change Wifi settings incl. addESPUITab
 - [ ] Power supply 
-- [ ] Build on Board
+- [x] Build on Board
+- [ ] Auto Reset on startup
 - [ ] add api?
 
 - BJT: https://www.diyengineers.com/2020/12/17/2n2222-transistor-npn/
