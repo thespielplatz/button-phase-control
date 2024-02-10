@@ -56,3 +56,4 @@ Example:
 
 - **Roadmap:** [Link to Roadmap](docs/roadmap.md)
 - **Hardware Notes:** [Link to Hardware Notes](docs/hardware.md)
+- **Software Development Notes:** [Link to Software Development Notes](docs/software.md)
