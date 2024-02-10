@@ -45,6 +45,7 @@ class PhaseControl {
 
     void setTargetValue(int8_t value);
     uint8_t getTargetValue();
+    uint8_t getCurrentValue();
     void update();
 
     void setPhaseChangedCallback(std::function<void(uint8_t, void *UserInfo)> phaseChangedCallback, void *UserInfo);

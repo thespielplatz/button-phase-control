@@ -1,5 +1,6 @@
 #include "PhaseControl.h"
 #include "tools.h"
+#include "Api.h"
 
 #include <Arduino.h>
 
@@ -42,6 +43,11 @@ void PhaseControl::setCurrentValue(uint8_t value) {
     this->phaseChangedCallback(this->currentValue, this->phaseChangedCallbackUserInfo);
   }
 }
+
+uint8_t PhaseControl::getCurrentValue() {
+  return this->currentValue;
+}
+
 
 void PhaseControl::stepDown() {
   digitalWrite(this->pinPhaseDown, HIGH); 

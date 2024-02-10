@@ -2,6 +2,7 @@
 #include <Preferences.h>
 #include <ESPUI.h>
 
+#include "Api.h"
 #include "PhaseControl.h"
 #include "PhaseControlViewController.h"
 #include "WifiModule.h"
@@ -22,6 +23,8 @@ bool firstRun = true;
 
 Config *config = new Config();
 
+Api *api = new Api();
+
 PhaseControl *phaseControl = new PhaseControl(PIN_PHASE_DOWN, PIN_PHASE_UP);
 PhaseControlViewController *phaseControlViewController = new PhaseControlViewController(phaseControl);
 WifiModule *wifi = new WifiModule();
@@ -40,7 +43,7 @@ void setup() {
   wifi->connect(config->getWifiSSID(), config->getWifiPassword());
 
   //Turn off verbose debugging
-	ESPUI.setVerbosity(Verbosity::Quiet);
+  ESPUI.setVerbosity(Verbosity::Quiet);
 
   uint16_t tabPhaseControl = ESPUI.addControl(ControlType::Tab, "Phase Control", "Phase Control");
   uint16_t tabWifiSettings = ESPUI.addControl(ControlType::Tab, "Wifi Settings", "Wifi Settings");
@@ -49,6 +52,8 @@ void setup() {
   wifiModuleViewController->createUI(tabWifiSettings);
 
   ESPUI.begin("Phase Control");
+
+  api->setup(ESPUI.server, phaseControl);
 }
 
 void loop() {
