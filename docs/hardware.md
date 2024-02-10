@@ -5,9 +5,20 @@
 - PIN IO33 for Green / Down
 - PIN TMS for Yellow / Up
 - To set the button on GND, I used a 2n2222 NPN Transistors.
+## Hardware Notes
+
+### Hardware configuration
+- ESP: D1
+- PIN IO33 for Green / Down
+- PIN TMS for Yellow / Up
+- To set the button on GND, I used a 2n2222 NPN Transistor.
+
+<img src="2n2222.jpg" alt="2n2222 NPN Transistor" width="300">
+
     - Collector: to the V+ of the button on the controll board.
     - Base: with an 2k2 Ohm resistor to the ESP pin.
-    - Emitter to GND:
+    - Emitter to GND
+    
 - GND connected between ESP32 and the controll board
 - ESP32 with external Power Supply, because the board could only deliver had 6mA
 
