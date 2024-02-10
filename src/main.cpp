@@ -9,6 +9,8 @@
 #include "WifiModuleViewController.h"
 #include "Config.h"
 
+#define VERSION "1.0"
+
 const uint8_t PIN_PHASE_DOWN = 33; // Green
 const uint8_t PIN_PHASE_UP = 14; // Yellow
 
@@ -32,6 +34,9 @@ WifiModuleViewController *wifiModuleViewController = new WifiModuleViewControlle
 
 void setup() {
   Serial.begin(115200);
+  Serial.print("Version: ");
+  Serial.println(VERSION);
+
   Serial.println("Setup");
 
   preferences = new Preferences();
@@ -50,6 +55,8 @@ void setup() {
 
   phaseControlViewController->createUI(tabPhaseControl);
   wifiModuleViewController->createUI(tabWifiSettings);
+
+  ESPUI.addControl(ControlType::Label, "Version", VERSION, ControlColor::Dark, tabWifiSettings);
 
   ESPUI.begin("Phase Control");
 
