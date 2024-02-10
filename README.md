@@ -2,9 +2,8 @@
 
 Enhance a [phase control board](https://www.amazon.de/dp/B07SFF9VC6?ref_=cm_sw_r_apan_dp_5E5BYS5TRJ6GNMP8MNYR&language=de-DE) by integrating it with an ESP32 microcontroller, enabling control through a web interface. Additionally, incorporate an API to facilitate seamless integration with home automation systems.
 
-```text
-This project is merely a proof of concept and should not be considered as a prototype or a finished product. It is intended to demonstrate the potential capabilities and is not designed for practical use. If you choose to replicate or build upon this project, do so with caution and at your own risk.
-```
+> [!IMPORTANT]
+> This project is merely a proof of concept and should not be considered as a prototype or a finished product. It is intended to demonstrate the potential capabilities and is not designed for practical use. If you choose to replicate or build upon this project, do so with caution and at your own risk.
 
 See [Disclaimer](#disclaimer) and [Warning](#warning)
 
@@ -67,12 +66,10 @@ Example:
 
 ## Disclaimer
 
-```text
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
-```
+> [!NOTE]
+> THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 ## Warning
 
-```
-This project involves the use of a phase control board that operates at 230 Volts. This is a potentially lethal voltage. Extreme caution must be exercised when building, modifying, or operating this project. This project is not suitable for people who are not familiar with electrical safety procedures. If you're not sure about something, seek help from a qualified professional. Do not risk your life or the lives of others. Always remember: Safety first!
-```
+> [!CAUTION]
+> This project involves the use of a phase control board that operates at 230 Volts. This is a potentially lethal voltage. Extreme caution must be exercised when building, modifying, or operating this project. This project is not suitable for people who are not familiar with electrical safety procedures. If you're not sure about something, seek help from a qualified professional. Do not risk your life or the lives of others. Always remember: Safety first!
