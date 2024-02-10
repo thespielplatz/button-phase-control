@@ -31,7 +31,8 @@ void Api::setup(AsyncWebServer* server, PhaseControl* phaseControl) {
         }
         request->send(response);
     }, NULL, [&](AsyncWebServerRequest *request, uint8_t *data, size_t len, size_t index, size_t total) {
-        DynamicJsonDocument doc(1024);
+        JsonDocument doc;
+
         this->lastPostTargetValueError = deserializeJson(doc, (const char*)data);
 
         if (this->lastPostTargetValueError) {

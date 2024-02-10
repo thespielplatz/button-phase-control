@@ -11,7 +11,7 @@ const uint32_t RECALIBRATE_WAIT_TIME = 15 * 1000; // 15 sec
 PhaseControl::PhaseControl(uint8_t _pinPhaseDown, uint8_t _pinPhaseUp) : 
   pinPhaseDown(_pinPhaseDown),
   pinPhaseUp(_pinPhaseUp),
-  phaseChangedCallback(NULL),
+  currentValueChangedCallback(NULL),
   stateChangedCallback(NULL),
   state(PhaseControlState::Starting) {
 
@@ -39,8 +39,8 @@ void PhaseControl::setState(PhaseControlState newState) {
 
 void PhaseControl::setCurrentValue(uint8_t value) {
   this->currentValue = max(min((int)value, 100), 0);
-  if (this->phaseChangedCallback != NULL) {
-    this->phaseChangedCallback(this->currentValue, this->phaseChangedCallbackUserInfo);
+  if (this->currentValueChangedCallback != NULL) {
+    this->currentValueChangedCallback(this->currentValue, this->currentValueChangedCallbackUserInfo);
   }
 }
 
@@ -67,10 +67,14 @@ void PhaseControl::stepUp() {
   this->setCurrentValue(this->currentValue + 1);
 }
 
-void PhaseControl::setTargetValue(int8_t value) {
+void PhaseControl::setTargetValue(int8_t value, bool skipCallback) {
   this->targetValue = max(min((int)value, 100), 0);
   Serial.print("Setting target to: ");
   Serial.println(this->targetValue);
+
+  if (!skipCallback && this->targetValueChangedCallback != NULL) {
+    this->targetValueChangedCallback(this->targetValue, this->targetValueChangedCallbackUserInfo);
+  }
 }
 
 uint8_t PhaseControl::getTargetValue() {
@@ -124,14 +128,19 @@ void PhaseControl::update() {
   }
 }
 
-void PhaseControl::setPhaseChangedCallback(std::function<void(uint8_t, void *UserInfo)> phaseChangedCallback, void *UserInfo) {
-  this->phaseChangedCallback = phaseChangedCallback;
-  this->phaseChangedCallbackUserInfo = UserInfo;
+void PhaseControl::setCurrentValueChangedCallback(std::function<void(uint8_t, void *UserInfo)> phaseChangedCallback, void *UserInfo) {
+  this->currentValueChangedCallback = phaseChangedCallback;
+  this->currentValueChangedCallbackUserInfo = UserInfo;
 }
 
 void PhaseControl::setStateChangedCallback(std::function<void(PhaseControlState, void *UserInfo)> stateChangedCallback, void *UserInfo) {
   this->stateChangedCallback = stateChangedCallback;
   this->stateChangedCallbackUserInfo = UserInfo;
+}
+
+void PhaseControl::setTargetValueChangedCallback(std::function<void(uint8_t, void *UserInfo)> targetValueChangedCallback, void *UserInfo) {
+  this->targetValueChangedCallback = targetValueChangedCallback;
+  this->targetValueChangedCallbackUserInfo = UserInfo;
 }
 
 PhaseControlState PhaseControl::getState() {

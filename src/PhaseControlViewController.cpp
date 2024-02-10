@@ -39,7 +39,7 @@ void PhaseControlViewController::createUI(uint16_t tabId) {
   this->sliderId = ESPUI.addControl(ControlType::Slider, "Target Value", "0", ControlColor::Wetasphalt, tabId, [](Control *sender, int eventname, void *UserInfo) {
     PhaseControlViewController *self = (PhaseControlViewController *)UserInfo;
     if (eventname == SL_VALUE) {
-      self->phaseControl->setTargetValue(sender->value.toInt());
+      self->phaseControl->setTargetValue(sender->value.toInt(), true);
     }
   }, this);
   ESPUI.addControl(ControlType::Min, "0", String(0), ControlColor::None, sliderId);
@@ -53,10 +53,11 @@ void PhaseControlViewController::createUI(uint16_t tabId) {
     }
   }, this);
 
-  this->phaseControl->setPhaseChangedCallback([](uint8_t phaseValue, void *UserInfo) { 
+  this->phaseControl->setCurrentValueChangedCallback([](uint8_t phaseValue, void *UserInfo) { 
     PhaseControlViewController *self = (PhaseControlViewController *)UserInfo;
     ESPUI.updateLabel(self->labelPhaseValueId, String(phaseValue));
   }, this);
+
   this->phaseControl->setStateChangedCallback([](PhaseControlState state, void *UserInfo) { 
     PhaseControlViewController *self = (PhaseControlViewController *)UserInfo;
     Serial.print("State Changed to: ");
@@ -70,6 +71,11 @@ void PhaseControlViewController::createUI(uint16_t tabId) {
     if (state == PhaseControlState::Running) {
       self->enableControls();
     }
+  }, this);
+
+  this->phaseControl->setTargetValueChangedCallback([](uint8_t phaseValue, void *UserInfo) { 
+    PhaseControlViewController *self = (PhaseControlViewController *)UserInfo;
+    ESPUI.updateSlider(self->sliderId, phaseValue);
   }, this);
 
   ESPUI.updateLabel(this->labelStatusId,  "Startup");
@@ -93,7 +99,7 @@ void PhaseControlViewController::enableControls() {
 void PhaseControlViewController::setTargetValueAndSlider(int8_t newTargetValue) {
   newTargetValue = min(100, max(0, (int)newTargetValue));
   ESPUI.updateSlider(this->sliderId, newTargetValue);
-  phaseControl->setTargetValue(newTargetValue);
+  phaseControl->setTargetValue(newTargetValue, true);
 }
 
 void PhaseControlViewController::update() {
