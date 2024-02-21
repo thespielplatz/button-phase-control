@@ -13,7 +13,14 @@ void Api::setup(AsyncWebServer* server, PhaseControl* phaseControl) {
         request->send(response);
     });  
 
-    server->on("/api/target-value", HTTP_GET, [this](AsyncWebServerRequest *request){
+    server->on("/api/target-value", HTTP_GET, [this](AsyncWebServerRequest *request) {
+        if (request->hasParam("set")) {
+            AsyncWebParameter* p = request->getParam("set");
+            Serial.print("set: ");
+            Serial.println(p->value().c_str());
+            int value = p->value().toInt();
+            this->phaseControl->setTargetValue(value);
+        }
         AsyncResponseStream *response = request->beginResponseStream("text/plain");
         response->print(this->phaseControl->getTargetValue());
         request->send(response);
