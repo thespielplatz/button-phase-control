@@ -36,6 +36,14 @@ This endpoint retrieves the target value which the phase control is moving the c
 
 **Response:**  If the request is successful, the server will respond with a `200 OK` status and an integer in the body.
 
+### GET /api/target-value?set=\<int\>
+
+This endpoint sets the target value.
+
+**Request:** This endpoint requires `set` as GET parameter with type `<int>`.
+
+**Response 200:**  If the request is successful, the server will respond with a `200 OK` status and an integer in the body. The return value will be the target value of the phase control.
+
 ### POST /api/target-value
 
 This endpoint sets the target value.
